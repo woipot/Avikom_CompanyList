@@ -21,7 +21,41 @@
     <Window.DataContext>
         <viewModels:MainVm/>
     </Window.DataContext>
+    
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ListView ItemsSource="{Binding Companies}" HorizontalContentAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Expander>
+                        <Expander.Header>
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox TextWrapping="Wrap" DockPanel.Dock="Top" MinWidth="40" Text="{Binding Name}" Margin="0,0,10,0" />
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button DockPanel.Dock="Right" Content="Delete company" FontSize="12">
+                                        <Button.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                <GradientStop Color="#99FF0000" Offset="0"/>
+                                                <GradientStop Color="#99830D0D" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+
+                    </Expander>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Window>
