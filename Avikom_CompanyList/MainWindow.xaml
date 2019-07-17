@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Avikom_CompanyList"
 
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModels="clr-namespace:Avikom_CompanyList.mvvm.ViewModels"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -17,7 +18,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
-
+    <Window.DataContext>
+        <viewModels:MainVm/>
+    </Window.DataContext>
     <Grid>
         
     </Grid>
