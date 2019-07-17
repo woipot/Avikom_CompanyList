@@ -7,6 +7,8 @@
 
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewModels="clr-namespace:Avikom_CompanyList.mvvm.ViewModels"
+        xmlns:enums="clr-namespace:Avikom_CompanyList.other.Enums"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -21,7 +23,16 @@
     <Window.DataContext>
         <viewModels:MainVm/>
     </Window.DataContext>
-    
+
+    <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:ContractStatus"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -35,13 +46,16 @@
                             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="0.3*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBox TextWrapping="Wrap" DockPanel.Dock="Top" MinWidth="40" Text="{Binding Name}" Margin="0,0,10,0" />
 
-                                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <Button DockPanel.Dock="Right" Content="Delete company" FontSize="12">
+                                <ComboBox SelectedValue="{Binding ContractStatus}" ItemsSource="{Binding Source={StaticResource dataFromEnum}}" Grid.Column="1" Margin="10,0,10,0" />
+
+                                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                    <Button Command="{Binding RelativeSource={RelativeSource AncestorType = ListView}, Path=DataContext.DeleteCompanyCommand}" CommandParameter="{Binding}" DockPanel.Dock="Right" Content="Delete company" FontSize="12">
                                         <Button.Background>
                                             <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                                                 <GradientStop Color="#99FF0000" Offset="0"/>

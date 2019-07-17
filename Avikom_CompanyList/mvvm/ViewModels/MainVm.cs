@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Entity;
-using System.Linq;
 using Avikom_CompanyList.Entities;
 using Avikom_CompanyList.mvvm.Models;
 using DevExpress.Mvvm;
@@ -10,14 +9,20 @@ using DevExpress.Mvvm.Native;
 
 namespace Avikom_CompanyList.mvvm.ViewModels
 {
-    public class MainVm : BindableBase
+    public class MainVm : BindableBase, IDisposable
     {
-        public ObservableCollection<CompanyModel> Companies { get; private set; }
+
+        private CompanyContext _db;
+
+        public ObservableCollection<CompanyModel> Companies => _db.Companies.Local;
 
         public MainVm()
         {
+            _db = new CompanyContext();
             InitBD();
-            Companies = LoadFromDb();
+            LoadFromDb();
+
+            DeleteCompanyCommand = new DelegateCommand<CompanyModel>(DeleteCompany);
 
             //using (var db = new CompanyContext())
             //{
@@ -31,29 +36,46 @@ namespace Avikom_CompanyList.mvvm.ViewModels
             //    var pl3 = new UserModel { Name = "Хави", CompanyModel = t1 };
             //    db.Users.AddRange(new List<UserModel> { pl1, pl2, pl3 });
             //    db.SaveChanges();
-
             //}
         }
 
+        public void Dispose()
+        {
+            _db?.Dispose();
+        }
+
+
+        public DelegateCommand<CompanyModel> DeleteCompanyCommand { get; }
+
+        private void DeleteCompany(CompanyModel company)
+        {
+            _db.Companies.Remove(company);
+            RaisePropertiesChanged("Companies");
+            _db.SaveChanges();
+        }
 
         private ObservableCollection<CompanyModel> LoadFromDb()
         {
-
-            using (var db = new CompanyContext())
+            _db.Companies.Load();
+            foreach (var company in _db.Companies)
             {
-                db.Companies.Load();
-                db.Users.Load();
-
-                return db.Companies.Local.ToObservableCollection();
+                company.PropertyChanged += Update;
             }
+         //   _db.Users.Load();
+            
+            return _db.Companies.Local.ToObservableCollection();
         }
 
         private void InitBD()
         {
-            using (var db = new CompanyContext())
-            {
-                db.Database.CreateIfNotExists();
-            }
+            _db.Database.CreateIfNotExists();
         }
+
+        private void Update(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            _db.Entry(sender).State = EntityState.Modified;
+            _db.SaveChanges();
+        }
+
     }
 }

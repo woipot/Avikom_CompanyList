@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.Entity;
+using Avikom_CompanyList.Entities;
 using Avikom_CompanyList.other.Enums;
 using DevExpress.Mvvm;
+using DevExpress.Mvvm.Native;
 
 namespace Avikom_CompanyList.mvvm.Models
 {
@@ -24,5 +28,6 @@ namespace Avikom_CompanyList.mvvm.Models
         {
             return Name;
         }
+
     }
 }
