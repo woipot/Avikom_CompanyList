@@ -17,7 +17,7 @@ namespace Avikom_CompanyList.mvvm.Models
 
         public ContractStatus ContractStatus { get; set; }
 
-        public virtual ICollection<UserModel> UserModels { get; set; }
+        public virtual ObservableCollection<UserModel> UserModels { get; set; }
 
         public CompanyModel()
         {

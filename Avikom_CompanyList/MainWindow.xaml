@@ -67,6 +67,24 @@
                             </Grid>
                         </Expander.Header>
 
+                        <StackPanel>
+                            <DataGrid ItemsSource="{Binding UserModels}" AutoGenerateColumns="false">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" CanUserSort="False"
+                                        Binding="{Binding Path=Name}"/>
+                                    <DataGridTextColumn Header="Login" CanUserSort="False"
+                                        Binding="{Binding Path=Login}"/>
+                                    <DataGridTextColumn Header="Password" CanUserSort="False"
+                                        Binding="{Binding Path=Password}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Add new user" Padding="5" Margin="5"/>
+                            </StackPanel>
+                        </StackPanel>
+
+
                     </Expander>
                 </DataTemplate>
             </ListView.ItemTemplate>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
+using System.Windows;
 using Avikom_CompanyList.Entities;
 using Avikom_CompanyList.mvvm.Models;
 using DevExpress.Mvvm;
@@ -49,21 +51,44 @@ namespace Avikom_CompanyList.mvvm.ViewModels
 
         private void DeleteCompany(CompanyModel company)
         {
-            _db.Companies.Remove(company);
-            RaisePropertiesChanged("Companies");
-            _db.SaveChanges();
+            var res = MessageBox.Show("Do you really want to delete this item?", "Are you sure?", MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (res == MessageBoxResult.Yes)
+            {
+                //company.UserModels.Clear();
+
+                foreach (var userModel in company.UserModels)
+                {
+                    userModel.PropertyChanged -= Update;
+                }
+
+                company.PropertyChanged -= Update;
+
+                _db.Companies.Remove(company);
+                _db.SaveChanges();
+
+                RaisePropertiesChanged("Companies");
+            }
+
         }
 
-        private ObservableCollection<CompanyModel> LoadFromDb()
+        private void LoadFromDb()
         {
             _db.Companies.Load();
+            _db.Users.Load();
+
+
             foreach (var company in _db.Companies)
             {
                 company.PropertyChanged += Update;
             }
-         //   _db.Users.Load();
-            
-            return _db.Companies.Local.ToObservableCollection();
+            foreach (var user in _db.Users)
+            {
+                user.PropertyChanged += Update;
+            }
+
+          //  return _db.Companies.ToObservableCollection();
         }
 
         private void InitBD()

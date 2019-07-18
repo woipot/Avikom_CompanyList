@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows;
-using Avikom_CompanyList.Entities;
-using Avikom_CompanyList.mvvm.Models;
+﻿using System.Windows;
 
 namespace Avikom_CompanyList
 {
