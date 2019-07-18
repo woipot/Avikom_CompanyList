@@ -18,6 +18,9 @@ namespace Avikom_CompanyList.mvvm.ViewModels
 
         public ObservableCollection<CompanyModel> Companies => _db.Companies.Local;
 
+
+        #region Constructors
+
         public MainVm()
         {
             _db = new CompanyContext();
@@ -25,6 +28,9 @@ namespace Avikom_CompanyList.mvvm.ViewModels
             LoadFromDb();
 
             DeleteCompanyCommand = new DelegateCommand<CompanyModel>(DeleteCompany);
+            DeleteUserCommand = new DelegateCommand<UserModel>(DeleteUser);
+
+            AddUserCommand = new DelegateCommand<CompanyModel>(AddUser);
 
             //using (var db = new CompanyContext())
             //{
@@ -41,11 +47,20 @@ namespace Avikom_CompanyList.mvvm.ViewModels
             //}
         }
 
+        #endregion
+
+
+        #region Disposable
+
         public void Dispose()
         {
             _db?.Dispose();
         }
 
+        #endregion
+
+
+        #region View buttons
 
         public DelegateCommand<CompanyModel> DeleteCompanyCommand { get; }
 
@@ -73,6 +88,44 @@ namespace Avikom_CompanyList.mvvm.ViewModels
 
         }
 
+        public DelegateCommand<UserModel> DeleteUserCommand { get; }
+
+        private void DeleteUser(UserModel user)
+        {
+            var res = MessageBox.Show("Do you really want to delete this item?", "Are you sure?", MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (res == MessageBoxResult.Yes)
+            {
+                //company.UserModels.Clear();
+
+                user.PropertyChanged -= Update;
+
+                _db.Users.Remove(user);
+                _db.SaveChanges();
+
+                RaisePropertiesChanged("Companies");
+            }
+
+        }
+
+        public DelegateCommand<CompanyModel> AddUserCommand { get; }
+
+        private void AddUser(CompanyModel company)
+        {
+            var user = new UserModel(){CompanyModel = company};
+            _db.Users.Add(user);
+            _db.SaveChanges();
+            RaisePropertiesChanged("Companies");
+            user.PropertyChanged += Update;
+
+        }
+
+        #endregion
+
+
+        #region Db Tools
+
         private void LoadFromDb()
         {
             _db.Companies.Load();
@@ -88,7 +141,7 @@ namespace Avikom_CompanyList.mvvm.ViewModels
                 user.PropertyChanged += Update;
             }
 
-          //  return _db.Companies.ToObservableCollection();
+            //  return _db.Companies.ToObservableCollection();
         }
 
         private void InitBD()
@@ -96,11 +149,18 @@ namespace Avikom_CompanyList.mvvm.ViewModels
             _db.Database.CreateIfNotExists();
         }
 
+
+        #endregion
+
+
+        #region Other private
+
         private void Update(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             _db.Entry(sender).State = EntityState.Modified;
             _db.SaveChanges();
         }
 
+        #endregion
     }
 }

@@ -68,7 +68,8 @@
                         </Expander.Header>
 
                         <StackPanel>
-                            <DataGrid ItemsSource="{Binding UserModels}" AutoGenerateColumns="false">
+                            <DataGrid ItemsSource="{Binding UserModels}" AutoGenerateColumns="false" CanUserAddRows="False" CanUserSortColumns="False" HorizontalGridLinesBrush="DarkGray"
+                                    VerticalGridLinesBrush="Black">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Name" CanUserSort="False"
                                         Binding="{Binding Path=Name}"/>
@@ -76,11 +77,26 @@
                                         Binding="{Binding Path=Login}"/>
                                     <DataGridTextColumn Header="Password" CanUserSort="False"
                                         Binding="{Binding Path=Password}"/>
+
+                                    <DataGridTemplateColumn Header=""  MinWidth="100" CanUserSort="False" IsReadOnly="True">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Delete user" Command="{Binding RelativeSource={RelativeSource AncestorType = ListView}, Path=DataContext.DeleteUserCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType = DataGridCell}, Path=DataContext}">
+                                                    <Button.Background>
+                                                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                            <GradientStop Color="#99FF0000" Offset="0"/>
+                                                            <GradientStop Color="#99830D0D" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Button.Background>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
 
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Add new user" Padding="5" Margin="5"/>
+                                <Button Content="Add new user" Padding="5"  FontSize="12" Command="{Binding RelativeSource={RelativeSource AncestorType = ListView}, Path=DataContext.AddUserCommand}" CommandParameter="{Binding}"/>
                             </StackPanel>
                         </StackPanel>
 
