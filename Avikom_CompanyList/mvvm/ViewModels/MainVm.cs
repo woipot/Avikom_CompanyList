@@ -31,6 +31,7 @@ namespace Avikom_CompanyList.mvvm.ViewModels
             DeleteUserCommand = new DelegateCommand<UserModel>(DeleteUser);
 
             AddUserCommand = new DelegateCommand<CompanyModel>(AddUser);
+            AddCompanyCommand = new DelegateCommand(AddCompany);
 
             //using (var db = new CompanyContext())
             //{
@@ -88,6 +89,7 @@ namespace Avikom_CompanyList.mvvm.ViewModels
 
         }
 
+
         public DelegateCommand<UserModel> DeleteUserCommand { get; }
 
         private void DeleteUser(UserModel user)
@@ -109,6 +111,7 @@ namespace Avikom_CompanyList.mvvm.ViewModels
 
         }
 
+
         public DelegateCommand<CompanyModel> AddUserCommand { get; }
 
         private void AddUser(CompanyModel company)
@@ -118,6 +121,19 @@ namespace Avikom_CompanyList.mvvm.ViewModels
             _db.SaveChanges();
             RaisePropertiesChanged("Companies");
             user.PropertyChanged += Update;
+
+        }
+
+
+        public DelegateCommand AddCompanyCommand { get; }
+
+        private void AddCompany()
+        {
+            var company = new CompanyModel();
+            _db.Companies.Add(company);
+            _db.SaveChanges();
+            RaisePropertiesChanged("Companies");
+            company.PropertyChanged += Update;
 
         }
 
